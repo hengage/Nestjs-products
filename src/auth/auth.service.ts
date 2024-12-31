@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto, LoginDto } from './auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { excludeObjectProperties } from 'src/utils/transform';
+import { Msg } from 'src/utils/message';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +42,7 @@ export class AuthService {
     });
 
     if (!user) {
-      return Error('User with this email does not exist');
+      throw new NotFoundException(Msg.ERROR_USER_NOT_FOUND());
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -46,13 +51,10 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      return Error('Incorrect password');
+      throw new UnauthorizedException(Msg.ERROR_INCORRECT_PASSWORD());
     }
 
     const token = await this.generateToken(user.id, user.email);
-    // const { password, ...userWithoutPassword } = user;
-    // return { user: userWithoutPassword, token };
-
     return {
       user: excludeObjectProperties(user, ['password']),
       token,
