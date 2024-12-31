@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PrismaModule } from 'src/prisma.module';
 import { JWT_CONFIG } from 'src/constants';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { JWT_CONFIG } from 'src/constants';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: JWT_CONFIG.ACCESS_TOKEN_EXPIRES },
     }),
+    UsersModule,
   ],
   providers: [AuthService],
   controllers: [AuthController],

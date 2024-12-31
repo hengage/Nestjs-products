@@ -1,4 +1,7 @@
 export const Msg = {
+  ERROR_USER_ALREADY_EXISTS() {
+    return 'User with this email already exists';
+  },
   ERROR_USER_NOT_FOUND() {
     return 'User with this email does not exist';
   },
