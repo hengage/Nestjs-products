@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto, LoginDto } from './auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { excludeObjectProperties } from 'src/utils/transform';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
       },
     });
 
-    return exclude(user, ['password']);
+    return excludeObjectProperties(user, ['password']);
   }
 
   async loginUser(loginData: LoginDto) {
@@ -53,7 +54,7 @@ export class AuthService {
     // return { user: userWithoutPassword, token };
 
     return {
-      user: exclude(user, ['password']),
+      user: excludeObjectProperties(user, ['password']),
       token,
     };
   }
@@ -62,10 +63,4 @@ export class AuthService {
     const payload = { sub: userId, email };
     return this.jwtService.sign(payload);
   }
-}
-
-function exclude<T, Key extends keyof T>(obj: T, keys: Key[]): Omit<T, Key> {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !keys.includes(key as Key)),
-  ) as Omit<T, Key>;
 }
