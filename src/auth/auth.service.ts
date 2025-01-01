@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto, LoginDto } from './auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { excludeObjectProperties } from 'src/utils/transform';
+import { excludeObjectProperties } from 'src/utils/objects';
 import { Msg } from 'src/utils/message';
 import { UsersService } from 'src/users/users.service';
 
