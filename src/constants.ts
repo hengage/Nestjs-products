@@ -1,5 +1,6 @@
 export const JWT_CONFIG = {
   ACCESS_TOKEN_EXPIRES: '1h',
+  SECRET: process.env.JWT_SECRET,
 };
 
 export enum HttpMethods {

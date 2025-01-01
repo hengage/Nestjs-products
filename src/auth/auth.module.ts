@@ -10,6 +10,7 @@ import { UsersModule } from 'src/users/users.module';
   imports: [
     PrismaModule,
     JwtModule.register({
+      global: true,
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: JWT_CONFIG.ACCESS_TOKEN_EXPIRES },
     }),
