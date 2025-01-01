@@ -20,6 +20,9 @@ export const Msg = {
   ERROR_STRING_TYPE(field: ValidationFields) {
     return `${field} must be a string`;
   },
+  ERROR_NUMBER_TYPE(field: ValidationFields) {
+    return `${field} must be a string`;
+  },
   ERROR_REQUIRED(field: ValidationFields) {
     return `${field} is required`;
   },
