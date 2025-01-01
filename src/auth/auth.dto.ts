@@ -42,12 +42,12 @@ export class CreateUserDto {
 }
 
 export class LoginDto {
-  @IsNotEmpty({ message: Msg.ERROR_REQUIRED(VALIDATION_FIELDS.EMAIL) })
   @IsString({ message: Msg.ERROR_STRING_TYPE(VALIDATION_FIELDS.EMAIL) })
   @IsEmail({}, { message: Msg.ERROR_EMAIL_FORMAT() })
+  @IsNotEmpty({ message: Msg.ERROR_REQUIRED(VALIDATION_FIELDS.EMAIL) })
   email: string;
 
-  @IsNotEmpty({ message: Msg.ERROR_REQUIRED(VALIDATION_FIELDS.PASSWORD) })
   @IsString({ message: Msg.ERROR_STRING_TYPE(VALIDATION_FIELDS.PASSWORD) })
+  @IsNotEmpty({ message: Msg.ERROR_REQUIRED(VALIDATION_FIELDS.PASSWORD) })
   password: string;
 }
