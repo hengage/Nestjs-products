@@ -3,7 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PrismaModule } from 'src/prisma.module';
-import { JWT_CONFIG } from 'src/constants';
+import { JWT_CONSTANTS } from 'src/constants';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
@@ -11,8 +11,8 @@ import { UsersModule } from 'src/users/users.module';
     PrismaModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: JWT_CONFIG.ACCESS_TOKEN_EXPIRES },
+      secret: JWT_CONSTANTS.SECRET,
+      signOptions: { expiresIn: JWT_CONSTANTS.ACCESS_TOKEN_EXPIRES },
     }),
     UsersModule,
   ],

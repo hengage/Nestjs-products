@@ -1,4 +1,4 @@
-export const JWT_CONFIG = {
+export const JWT_CONSTANTS = {
   ACCESS_TOKEN_EXPIRES: '1h',
   SECRET: process.env.JWT_SECRET,
 };
