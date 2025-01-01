@@ -1,12 +1,20 @@
-import { IsNotEmpty, IsNumber, IsString, Max, Min } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
 export class CreateOrderDto {
-  @Min(3)
-  @Max(300)
-  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(300)
   @IsString()
+  @IsNotEmpty()
   description: string;
 
-  @Min(10)
+  @MinLength(10)
   @IsString()
   @IsNotEmpty()
   specifications: string;
