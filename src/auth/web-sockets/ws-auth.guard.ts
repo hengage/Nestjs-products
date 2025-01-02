@@ -4,6 +4,7 @@ import { WsException } from '@nestjs/websockets';
 import { extractTokenFromHeader } from '../auth.lib';
 import { JWT_CONSTANTS } from 'src/constants';
 import { Socket } from 'socket.io';
+import { Msg } from 'src/utils/message';
 
 @Injectable()
 export class WsAuthGuard implements CanActivate {
@@ -14,7 +15,7 @@ export class WsAuthGuard implements CanActivate {
     const token = extractTokenFromHeader(client);
 
     if (!token) {
-      throw new WsException('No authentication token provided');
+      throw new WsException(Msg.ERROR_NO_AUTH_TOKEN());
     }
 
     try {
@@ -24,7 +25,7 @@ export class WsAuthGuard implements CanActivate {
       client.data.user = payload;
       return true;
     } catch {
-      throw new WsException('Invalid authentication token');
+      throw new WsException(Msg.ERROR_INVALID_AUTH_TOKEN());
     }
   }
 }

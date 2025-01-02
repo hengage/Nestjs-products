@@ -29,6 +29,12 @@ export const Msg = {
   ERROR_EMAIL_FORMAT() {
     return 'Email must be a valid email format';
   },
+  ERROR_NO_AUTH_TOKEN() {
+    return 'No authentication token provided';
+  },
+  ERROR_INVALID_AUTH_TOKEN() {
+    return 'Invalid authentication token';
+  },
   USER_REGISTERED_SUCCESS() {
     return 'User registered successfully';
   },
