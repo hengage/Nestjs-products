@@ -1,3 +1,5 @@
+import { Request } from 'express';
+import { Socket } from 'socket.io';
 import { VALIDATION_FIELDS } from 'src/constants';
 
 /**
@@ -5,3 +7,5 @@ import { VALIDATION_FIELDS } from 'src/constants';
  */
 type ValidationFields =
   (typeof VALIDATION_FIELDS)[keyof typeof VALIDATION_FIELDS];
+
+type AuthTokenSource = Request | Socket;

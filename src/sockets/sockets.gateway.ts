@@ -11,12 +11,17 @@ import {
 import { Server, Socket } from 'socket.io';
 
 import { Observable } from 'rxjs';
+import { UseFilters, UseGuards } from '@nestjs/common';
+import { WsAuthGuard } from 'src/auth/web-sockets/ws-auth.guard';
+import { WsExceptionFilter } from 'src/auth/web-sockets/ws-exception.filter';
 
 @WebSocketGateway({
   cors: { origin: '*' },
   namespace: 'events',
   transports: ['websocket'],
 })
+@UseGuards(WsAuthGuard)
+@UseFilters(new WsExceptionFilter())
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -48,10 +53,17 @@ export class SocketGateway
   handleEventAsync(
     @MessageBody() data: unknown,
   ): Observable<WsResponse<number[]>> {
-    const response = [1, 2, 3];
-    return new Observable<WsResponse<number[]>>((subscriber) => {
-      subscriber.next({ event: 'sent-text', data: response });
-      subscriber.complete();
-    });
+    try {
+      const response = [1, 2, 3];
+      return new Observable<WsResponse<number[]>>((subscriber) => {
+        subscriber.next({ event: 'sent-text', data: response });
+        subscriber.complete();
+      });
+    } catch (error) {
+      return new Observable((subscriber) => {
+        subscriber.next({ event: 'send-text-error', data: [0] });
+        subscriber.error(error);
+      });
+    }
   }
 }
