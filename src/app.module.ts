@@ -7,10 +7,12 @@ import { UsersService } from './users/users.service';
 import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
 import { SocketsModule } from './sockets/sockets.module';
+import { ChatService } from './chat/chat.service';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, OrdersModule, SocketsModule],
+  imports: [AuthModule, UsersModule, OrdersModule, SocketsModule, ChatModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService, UsersService],
+  providers: [AppService, PrismaService, UsersService, ChatService],
 })
-export class AppModule {}
+export class AppModule { }

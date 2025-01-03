@@ -8,30 +8,59 @@ datasource db {
 }
 
 model User {
-  id          String   @id @default(cuid())
-  name        String   @db.VarChar(100)
-  email       String   @unique @db.VarChar(255)
-  password    String   @db.VarChar(500)
-  role        Role     @default(REGULAR)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  orders      Order[]  // Relation: A user can have many orders
+  id        String    @id @default(cuid())
+  name      String    @db.VarChar(100)
+  email     String    @unique @db.VarChar(255)
+  password  String    @db.VarChar(500)
+  role      Role      @default(REGULAR)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  orders    Order[] // Relation: A user can have many orders
+  Message   Message[]
 
   @@index([email])
   @@index([role])
 }
 
 model Order {
-  id             String    @id @default(cuid())
-  description    String    @db.VarChar(500)
-  specifications String    @db.VarChar(1000)
-  quantity       Int       
+  id             String      @id @default(cuid())
+  description    String      @db.VarChar(500)
+  specifications String      @db.VarChar(1000)
+  quantity       Int
   status         OrderStatus @default(REVIEW)
-  userId         String    
-  user           User      @relation(fields: [userId], references: [id])
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  userId         String
+  user           User        @relation(fields: [userId], references: [id])
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  ChatRoom       ChatRoom?
+
   @@index([userId, createdAt(sort: Desc)])
+}
+
+model ChatRoom {
+  id        String    @id @default(cuid())
+  orderId   String    @unique
+  order     Order     @relation(fields: [orderId], references: [id])
+  isOpen    Boolean   @default(true)
+  summary   String?   @db.VarChar(1000)
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([orderId])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String   @db.VarChar(1000)
+  chatRoomId String
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
+  senderId   String
+  sender     User     @relation(fields: [senderId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@index([chatRoomId])
+  @@index([senderId])
 }
 
 enum Role {
