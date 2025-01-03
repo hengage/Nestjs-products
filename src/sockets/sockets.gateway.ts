@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { WsAuthGuard } from 'src/auth/web-sockets/ws-auth.guard';
 import { WsExceptionFilter } from 'src/auth/web-sockets/ws-exception.filter';
+import { ChatService } from 'src/chat/chat.service';
 
 @WebSocketGateway({
   cors: { origin: '*' },
@@ -25,6 +26,7 @@ import { WsExceptionFilter } from 'src/auth/web-sockets/ws-exception.filter';
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(private chatService: ChatService) {}
   @WebSocketServer()
   server: Server;
 
