@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
+import { ChatRoom } from '@prisma/client'
 
 @Injectable()
 export class ChatService {
-  constructor(private prisma: PrismaService) {}
-  async createChatRoom(orderId: string) {
+  constructor(private prisma: PrismaService) { }
+  async createChatRoom(orderId: string): Promise<ChatRoom> {
     return this.prisma.chatRoom.create({
       data: {
         order: { connect: { id: orderId } },
@@ -19,6 +20,13 @@ export class ChatService {
     });
   }
 
+  async findById(id: string): Promise<ChatRoom> {
+    return this.prisma.chatRoom.findUnique({
+      where: { id },
+      include: { order: true },
+    });
+  }
+
   async createMessage(chatRoomId: string, senderId: string, content: string) {
     return this.prisma.message.create({
       data: {
@@ -26,17 +34,20 @@ export class ChatService {
         chatRoom: { connect: { id: chatRoomId } },
         sender: { connect: { id: senderId } },
       },
-      include: { sender: true },
     });
   }
 
-  async getMessages(orderId: string) {
+  async getMessages(chatRoomId: string) {
     return this.prisma.message.findMany({
       where: {
-        chatRoom: { orderId },
+        chatRoomId,
       },
-      include: { sender: true },
       orderBy: { createdAt: 'asc' },
+      select: {
+        content: true,
+        senderId: true,
+        createdAt: true,
+      },
     });
   }
 
