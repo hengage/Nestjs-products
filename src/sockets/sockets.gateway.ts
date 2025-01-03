@@ -15,6 +15,7 @@ import { UseFilters, UseGuards } from '@nestjs/common';
 import { WsAuthGuard } from 'src/auth/web-sockets/ws-auth.guard';
 import { WsExceptionFilter } from 'src/auth/web-sockets/ws-exception.filter';
 import { ChatService } from 'src/chat/chat.service';
+import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway({
   cors: { origin: '*' },
@@ -26,7 +27,10 @@ import { ChatService } from 'src/chat/chat.service';
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private usersService: UsersService,
+  ) {}
   @WebSocketServer()
   server: Server;
 
@@ -44,6 +48,57 @@ export class SocketGateway
 
   emit(eventName: string, data: any): void {
     this.server.sockets.emit(eventName, data);
+  }
+
+  async handleNotifyOfNewChatRoom(
+    @MessageBody() data: { orderId: string; userId: string; chatRoom: any },
+  ) {
+    this.server.emit('new-chat-room', {
+      orderId: data.orderId,
+      userId: data.userId,
+      chatRoom: data.chatRoom,
+    });
+  }
+
+  @SubscribeMessage('send-message')
+  async handleMessage(
+    client: Socket,
+    payload: { orderId: string; content: string; userId: string },
+  ) {
+    const chatRoom = await this.chatService.findChatRoom(payload.orderId);
+    if (!chatRoom || !chatRoom.isOpen) return;
+
+    const message = await this.chatService.createMessage(
+      chatRoom.id,
+      payload.userId,
+      payload.content,
+    );
+
+    this.server.to(payload.orderId).emit('new-message', message);
+  }
+
+  @SubscribeMessage('get-messages')
+  async handleGetMessages(client: Socket, payload: { orderId: string }) {
+    const messages = await this.chatService.getMessages(payload.orderId);
+    return { event: 'messages', data: messages };
+  }
+
+  @SubscribeMessage('close-chat')
+  async handleCloseChat(
+    client: Socket,
+    payload: { orderId: string; userId: string; summary: string },
+  ) {
+    const user = await this.usersService.findById(payload.userId);
+    if (user.role !== 'ADMIN') return;
+
+    const updatedRoom = await this.chatService.closeChatRoom(
+      payload.orderId,
+      payload.summary,
+    );
+    this.server.to(payload.orderId).emit('chat-closed', {
+      roomId: updatedRoom.id,
+      summary: updatedRoom.summary,
+    });
   }
 
   @SubscribeMessage('open-chat')
