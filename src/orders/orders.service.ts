@@ -4,7 +4,7 @@ import { CreateOrderDto } from './orders.dto';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async createOrder(userId: string, createOrderDto: CreateOrderDto) {
     return this.prisma.order.create({
