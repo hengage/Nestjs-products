@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { ChatRoom } from '@prisma/client'
+import { ChatRoom } from '@prisma/client';
 
 @Injectable()
 export class ChatService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
   async createChatRoom(orderId: string): Promise<ChatRoom> {
     return this.prisma.chatRoom.create({
       data: {

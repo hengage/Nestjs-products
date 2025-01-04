@@ -26,11 +26,12 @@ import { ChatRoom, Message, User } from '@prisma/client';
 @UseGuards(WsAuthGuard)
 @UseFilters(new WsExceptionFilter())
 export class SocketGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(
     private chatService: ChatService,
     private usersService: UsersService,
-  ) { }
+  ) {}
   @WebSocketServer()
   server: Server;
 
